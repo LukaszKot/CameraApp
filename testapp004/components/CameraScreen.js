@@ -61,9 +61,9 @@ class CameraScreen extends Component {
                             flex: 1, flexDirection: "row", justifyContent: "center", height: 200, width: "100%",
                             position: "absolute", bottom: 0, alignItems: "center"
                         }}>
-                            <CircleButton radius={50} iconName="cw" onPress={this.rotateCamera} />
-                            <CircleButton radius={75} iconName="plus" onPress={this.doPhoto} />
-                            <CircleButton radius={50} iconName="cog" onPress={this.goToSettings} />
+                            <CircleButton radius={33} iconName="cw" onPress={this.rotateCamera} />
+                            <CircleButton radius={50} iconName="plus" onPress={this.doPhoto} />
+                            <CircleButton radius={33} iconName="cog" onPress={this.goToSettings} />
                         </View>
                     </Camera>
                 </View>
