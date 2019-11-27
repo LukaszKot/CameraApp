@@ -51,7 +51,7 @@ class Gallery extends Component {
                 <View style={styles.galleryView}>
                     <FlatList style={{ flexDirection: 'column' }}
                         data={this.state.photos}
-                        renderItem={({ item }) => <FotoItem isGrid={this.state.isGrid} photo={item} />}
+                        renderItem={({ item, index }) => <FotoItem isGrid={this.state.isGrid} photo={item} selectCallback={this.select} index={index} />}
                         keyExtractor={(item, index) => item + index}
                         numColumns={this.state.numColumns}
                         key={this.state.numColumns}
@@ -83,6 +83,14 @@ class Gallery extends Component {
 
     removeSelected = () => {
 
+    }
+
+    select = (i) => {
+        var photosList = JSON.parse(JSON.stringify(this.state.photos))
+        photosList[i].toDelete = photosList[i].toDelete ? false : true
+        this.setState({
+            photos: photosList
+        })
     }
 }
 
