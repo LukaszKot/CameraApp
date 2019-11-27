@@ -7,39 +7,31 @@ import * as MediaLibrary from "expo-media-library";
 
 class CameraScreen extends Component {
     static navigationOptions = {
-        title: "Camera",
-        headerStyle: {
-            backgroundColor: "#F44336",
-        },
-        headerTitleStyle: {
-            color: "#ffffff"
-        },
-        headerTintColor: "#ffffff"
+        header: null
     }
     constructor(props) {
         super(props);
         this.state = {
             hasCameraPermission: null,
-            type: Camera.Constants.Type.back
+            type: Camera.Constants.Type.back,
+            takenPhotos: []
         };
+    }
+
+    handleBackPress = () => {
+        this.props.navigation.state.params.refresh(this.state.takenPhotos)
+        this.props.navigation.goBack()
+        return true;
     }
 
     async componentDidMount() {
         let { status } = await Permissions.askAsync(Permissions.CAMERA);
         this.setState({ hasCameraPermission: status == 'granted' });
-
-        BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
-
+        this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
     }
 
     async componentWillUnmount() {
-        BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
-    }
-
-    handleBackPress = () => {
-        this.props.navigation.state.params.refresh()
-        this.props.navigation.goBack()
-        return true;
+        this.backHandler.remove()
     }
 
     render() {
@@ -89,7 +81,11 @@ class CameraScreen extends Component {
                 ToastAndroid.SHORT,
                 ToastAndroid.CENTER
             );
-            alert(JSON.stringify(asset, null, 4))
+            var takenPhotos = JSON.parse(JSON.stringify(this.state.takenPhotos));
+            takenPhotos.push(asset)
+            this.setState({
+                takenPhotos: takenPhotos
+            })
         }
     }
 

@@ -62,7 +62,13 @@ class Gallery extends Component {
     }
 
     refreshPhotosInGallery = (photos) => {
-
+        var photosList = JSON.parse(JSON.stringify(this.state.photos))
+        photos.forEach(element => {
+            photosList.unshift(element)
+        });
+        this.setState({
+            photos: photosList
+        })
     }
 
     changeGridToListOrReverse = () => {
