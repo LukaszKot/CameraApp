@@ -44,9 +44,9 @@ class Gallery extends Component {
         return (
             <View style={styles.container}>
                 <View style={styles.topMenu}>
-                    <Button title="GRID / LIST" onPress={this.changeGridToListOrReverse} />
-                    <Button title="OPEN CAMERA" onPress={this.openCamera} />
-                    <Button title="REMOVE SELECTED" onPress={this.removeSelected} />
+                    <Button title="GRID / LIST" onPress={this.changeGridToListOrReverse} style={styles.buttonStyle} text={styles.buttonTextStyle} />
+                    <Button title="OPEN CAMERA" onPress={this.openCamera} style={styles.buttonStyle} text={styles.buttonTextStyle} />
+                    <Button title="REMOVE SELECTED" onPress={this.removeSelected} style={styles.buttonStyle} text={styles.buttonTextStyle} />
                 </View>
                 <View style={styles.galleryView}>
                     <FlatList
@@ -90,8 +90,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center'
     },
+    buttonStyle: {
+        flex: 1,
+    },
     galleryView: {
         flex: 7
+    },
+    buttonTextStyle: {
+        fontSize: 12
     }
 })
 
