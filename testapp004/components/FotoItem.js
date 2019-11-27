@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import { Dimensions, TouchableOpacity, Image } from 'react-native';
 
 class FotoItem extends Component {
     constructor(props) {
@@ -9,13 +9,13 @@ class FotoItem extends Component {
     }
 
     render() {
-        console.log(this.props.photo)
         return (
             <TouchableOpacity style={{
+                flex: 1,
+                height: Dimensions.get("window").width / 4,
+                padding: 2
             }}>
                 <Image source={{ uri: this.props.photo.uri }} style={{
-                    width: null,
-                    height: null,
                     flex: 1
                 }} />
             </TouchableOpacity>

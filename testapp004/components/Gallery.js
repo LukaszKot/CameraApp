@@ -23,7 +23,7 @@ class Gallery extends Component {
         super(props);
         this.state = {
             photos: [],
-            numColumns: 4
+            numColumns: 1
         };
     }
     async componentWillMount() {
@@ -49,7 +49,7 @@ class Gallery extends Component {
                     <Button title="REMOVE SELECTED" onPress={this.removeSelected} style={styles.buttonStyle} text={styles.buttonTextStyle} />
                 </View>
                 <View style={styles.galleryView}>
-                    <FlatList
+                    <FlatList style={{ flexDirection: 'column' }}
                         data={this.state.photos}
                         renderItem={({ item }) => <FotoItem isGrid={this.state.isGrid} photo={item} />}
                         keyExtractor={(item, index) => item + index}
