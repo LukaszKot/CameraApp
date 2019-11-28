@@ -35,7 +35,7 @@ class CameraScreen extends Component {
     }
 
     render() {
-        const { hasCameraPermission } = this.state; // podstawienie zmiennej ze state
+        const { hasCameraPermission } = this.state;
         if (hasCameraPermission == null) {
             return <View />;
         } else if (hasCameraPermission == false) {
@@ -94,8 +94,5 @@ class CameraScreen extends Component {
     }
 }
 
-var styles = StyleSheet.create({
-
-})
 
 export default CameraScreen;

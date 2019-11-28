@@ -51,7 +51,7 @@ class Gallery extends Component {
                 <View style={styles.galleryView}>
                     <FlatList style={{ flexDirection: 'column' }}
                         data={this.state.photos}
-                        renderItem={({ item, index }) => <FotoItem isGrid={this.state.isGrid} photo={item} selectCallback={this.select} index={index} />}
+                        renderItem={({ item, index }) => <FotoItem isGrid={this.state.isGrid} photo={item} selectCallback={this.select} index={index} displaySingleCallback={this.displaySingleCallback} />}
                         keyExtractor={(item, index) => item + index}
                         numColumns={this.state.numColumns}
                         key={this.state.numColumns}
@@ -93,6 +93,19 @@ class Gallery extends Component {
     select = (i) => {
         var photosList = JSON.parse(JSON.stringify(this.state.photos))
         photosList[i].toDelete = photosList[i].toDelete ? false : true
+        this.setState({
+            photos: photosList
+        })
+    }
+
+    displaySingleCallback = (i) => {
+        this.props.navigation.navigate("bigPhoto", { photo: this.state.photos[i], refresh: this.refreshDelete })
+    }
+
+    refreshDelete = async (photo) => {
+        var photosList = JSON.parse(JSON.stringify(this.state.photos));
+        await MediaLibrary.deleteAssetsAsync([photo.id]);
+        var photosList = photosList.filter(x => x.id != photo.id)
         this.setState({
             photos: photosList
         })
