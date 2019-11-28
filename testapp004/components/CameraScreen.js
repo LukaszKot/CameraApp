@@ -7,43 +7,35 @@ import * as MediaLibrary from "expo-media-library";
 
 class CameraScreen extends Component {
     static navigationOptions = {
-        title: "Camera",
-        headerStyle: {
-            backgroundColor: "#F44336",
-        },
-        headerTitleStyle: {
-            color: "#ffffff"
-        },
-        headerTintColor: "#ffffff"
+        header: null
     }
     constructor(props) {
         super(props);
         this.state = {
             hasCameraPermission: null,
-            type: Camera.Constants.Type.back
+            type: Camera.Constants.Type.back,
+            takenPhotos: []
         };
+    }
+
+    handleBackPress = () => {
+        this.props.navigation.state.params.refresh(this.state.takenPhotos)
+        this.props.navigation.goBack()
+        return true;
     }
 
     async componentDidMount() {
         let { status } = await Permissions.askAsync(Permissions.CAMERA);
         this.setState({ hasCameraPermission: status == 'granted' });
-
-        BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
-
+        this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
     }
 
     async componentWillUnmount() {
-        BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
-    }
-
-    handleBackPress = () => {
-        this.props.navigation.state.params.refresh()
-        this.props.navigation.goBack()
-        return true;
+        this.backHandler.remove()
     }
 
     render() {
-        const { hasCameraPermission } = this.state; // podstawienie zmiennej ze state
+        const { hasCameraPermission } = this.state;
         if (hasCameraPermission == null) {
             return <View />;
         } else if (hasCameraPermission == false) {
@@ -61,9 +53,9 @@ class CameraScreen extends Component {
                             flex: 1, flexDirection: "row", justifyContent: "center", height: 200, width: "100%",
                             position: "absolute", bottom: 0, alignItems: "center"
                         }}>
-                            <CircleButton radius={50} iconName="cw" onPress={this.rotateCamera} />
-                            <CircleButton radius={75} iconName="plus" onPress={this.doPhoto} />
-                            <CircleButton radius={50} iconName="cog" onPress={this.goToSettings} />
+                            <CircleButton radius={33} iconName="cw" onPress={this.rotateCamera} />
+                            <CircleButton radius={50} iconName="plus" onPress={this.doPhoto} />
+                            <CircleButton radius={33} iconName="cog" onPress={this.goToSettings} />
                         </View>
                     </Camera>
                 </View>
@@ -89,7 +81,11 @@ class CameraScreen extends Component {
                 ToastAndroid.SHORT,
                 ToastAndroid.CENTER
             );
-            alert(JSON.stringify(asset, null, 4))
+            var takenPhotos = JSON.parse(JSON.stringify(this.state.takenPhotos));
+            takenPhotos.push(asset)
+            this.setState({
+                takenPhotos: takenPhotos
+            })
         }
     }
 
@@ -98,8 +94,5 @@ class CameraScreen extends Component {
     }
 }
 
-var styles = StyleSheet.create({
-
-})
 
 export default CameraScreen;

@@ -23,7 +23,7 @@ class Gallery extends Component {
         super(props);
         this.state = {
             photos: [],
-            numColumns: 4
+            numColumns: 1
         };
     }
     async componentWillMount() {
@@ -44,14 +44,14 @@ class Gallery extends Component {
         return (
             <View style={styles.container}>
                 <View style={styles.topMenu}>
-                    <Button title="GRID / LIST" onPress={this.changeGridToListOrReverse} />
-                    <Button title="OPEN CAMERA" onPress={this.openCamera} />
-                    <Button title="REMOVE SELECTED" onPress={this.removeSelected} />
+                    <Button title="GRID / LIST" onPress={this.changeGridToListOrReverse} style={styles.buttonStyle} text={styles.buttonTextStyle} />
+                    <Button title="OPEN CAMERA" onPress={this.openCamera} style={styles.buttonStyle} text={styles.buttonTextStyle} />
+                    <Button title="REMOVE SELECTED" onPress={this.removeSelected} style={styles.buttonStyle} text={styles.buttonTextStyle} />
                 </View>
                 <View style={styles.galleryView}>
-                    <FlatList
+                    <FlatList style={{ flexDirection: 'column' }}
                         data={this.state.photos}
-                        renderItem={({ item }) => <FotoItem isGrid={this.state.isGrid} photo={item} />}
+                        renderItem={({ item, index }) => <FotoItem isGrid={this.state.isGrid} photo={item} selectCallback={this.select} index={index} displaySingleCallback={this.displaySingleCallback} />}
                         keyExtractor={(item, index) => item + index}
                         numColumns={this.state.numColumns}
                         key={this.state.numColumns}
@@ -62,7 +62,13 @@ class Gallery extends Component {
     }
 
     refreshPhotosInGallery = (photos) => {
-
+        var photosList = JSON.parse(JSON.stringify(this.state.photos))
+        photos.forEach(element => {
+            photosList.unshift(element)
+        });
+        this.setState({
+            photos: photosList
+        })
     }
 
     changeGridToListOrReverse = () => {
@@ -75,8 +81,34 @@ class Gallery extends Component {
         this.props.navigation.navigate("cameraScreen", { refresh: this.refreshPhotosInGallery })
     }
 
-    removeSelected = () => {
+    removeSelected = async () => {
+        var photosList = JSON.parse(JSON.stringify(this.state.photos));
+        await MediaLibrary.deleteAssetsAsync(photosList.filter(x => x.toDelete == true).map(x => x.id));
+        var photosList = photosList.filter(x => x.toDelete != true)
+        this.setState({
+            photos: photosList
+        })
+    }
 
+    select = (i) => {
+        var photosList = JSON.parse(JSON.stringify(this.state.photos))
+        photosList[i].toDelete = photosList[i].toDelete ? false : true
+        this.setState({
+            photos: photosList
+        })
+    }
+
+    displaySingleCallback = (i) => {
+        this.props.navigation.navigate("bigPhoto", { photo: this.state.photos[i], refresh: this.refreshDelete })
+    }
+
+    refreshDelete = async (photo) => {
+        var photosList = JSON.parse(JSON.stringify(this.state.photos));
+        await MediaLibrary.deleteAssetsAsync([photo.id]);
+        var photosList = photosList.filter(x => x.id != photo.id)
+        this.setState({
+            photos: photosList
+        })
     }
 }
 
@@ -90,8 +122,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center'
     },
+    buttonStyle: {
+        flex: 1,
+    },
     galleryView: {
         flex: 7
+    },
+    buttonTextStyle: {
+        fontSize: 12
     }
 })
 
