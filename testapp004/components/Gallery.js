@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ToolbarAndroid } from 'react-native';
 import Button from './Button';
 import { FlatList } from 'react-native-gesture-handler';
 import * as Permissions from "expo-permissions";
@@ -9,14 +9,7 @@ import FotoItem from "./FotoItem";
 
 class Gallery extends Component {
     static navigationOptions = {
-        title: "Galeria",
-        headerStyle: {
-            backgroundColor: "#F44336",
-        },
-        headerTitleStyle: {
-            color: "#ffffff"
-        },
-        headerTintColor: "#ffffff"
+        header: null
     }
 
     constructor(props) {
@@ -43,11 +36,26 @@ class Gallery extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <View style={styles.topMenu}>
-                    <Button title="GRID / LIST" onPress={this.changeGridToListOrReverse} style={styles.buttonStyle} text={styles.buttonTextStyle} />
-                    <Button title="OPEN CAMERA" onPress={this.openCamera} style={styles.buttonStyle} text={styles.buttonTextStyle} />
-                    <Button title="REMOVE SELECTED" onPress={this.removeSelected} style={styles.buttonStyle} text={styles.buttonTextStyle} />
-                </View>
+                <View style={{ backgroundColor: "#F44336", height: 24 }} />
+                <ToolbarAndroid
+                    style={{
+                        backgroundColor: '#F44336',
+                        height: 56, width: "100%",
+                        elevation: 0,
+
+                    }}
+
+                    titleColor="#ffffff"
+                    title="Galeria"
+                    navIcon={require("../assets/back.png")}
+                    onIconClicked={() => this.props.navigation.goBack()}
+                    actions={[
+                        { title: 'grid / list', show: 'never' },
+                        { title: 'open camera', show: 'never' },
+                        { title: 'remove selected', show: 'never' },
+                    ]}
+                    onActionSelected={this.onActionSelected}
+                />
                 <View style={styles.galleryView}>
                     <FlatList style={{ flexDirection: 'column' }}
                         data={this.state.photos}
@@ -59,6 +67,20 @@ class Gallery extends Component {
                 </View>
             </View>
         );
+    }
+
+    onActionSelected = (position) => {
+        switch (position) {
+            case 0:
+                this.changeGridToListOrReverse()
+                break;
+            case 1:
+                this.openCamera()
+                break;
+            case 2:
+                this.removeSelected()
+                break;
+        }
     }
 
     refreshPhotosInGallery = (photos) => {
