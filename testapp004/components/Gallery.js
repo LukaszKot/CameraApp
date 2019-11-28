@@ -81,8 +81,13 @@ class Gallery extends Component {
         this.props.navigation.navigate("cameraScreen", { refresh: this.refreshPhotosInGallery })
     }
 
-    removeSelected = () => {
-
+    removeSelected = async () => {
+        var photosList = JSON.parse(JSON.stringify(this.state.photos));
+        await MediaLibrary.deleteAssetsAsync(photosList.filter(x => x.toDelete == true).map(x => x.id));
+        var photosList = photosList.filter(x => x.toDelete != true)
+        this.setState({
+            photos: photosList
+        })
     }
 
     select = (i) => {
