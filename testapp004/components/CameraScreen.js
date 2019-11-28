@@ -94,8 +94,5 @@ class CameraScreen extends Component {
     }
 }
 
-var styles = StyleSheet.create({
-
-})
 
 export default CameraScreen;

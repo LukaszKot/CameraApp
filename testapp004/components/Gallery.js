@@ -99,7 +99,16 @@ class Gallery extends Component {
     }
 
     displaySingleCallback = (i) => {
-        this.props.navigation.navigate("bigPhoto", { photo: this.state.photos[i] })
+        this.props.navigation.navigate("bigPhoto", { photo: this.state.photos[i], refresh: this.refreshDelete })
+    }
+
+    refreshDelete = async (photo) => {
+        var photosList = JSON.parse(JSON.stringify(this.state.photos));
+        await MediaLibrary.deleteAssetsAsync([photo.id]);
+        var photosList = photosList.filter(x => x.id != photo.id)
+        this.setState({
+            photos: photosList
+        })
     }
 }
 
