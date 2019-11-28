@@ -51,7 +51,7 @@ class Gallery extends Component {
                 <View style={styles.galleryView}>
                     <FlatList style={{ flexDirection: 'column' }}
                         data={this.state.photos}
-                        renderItem={({ item, index }) => <FotoItem isGrid={this.state.isGrid} photo={item} selectCallback={this.select} index={index} />}
+                        renderItem={({ item, index }) => <FotoItem isGrid={this.state.isGrid} photo={item} selectCallback={this.select} index={index} displaySingleCallback={this.displaySingleCallback} />}
                         keyExtractor={(item, index) => item + index}
                         numColumns={this.state.numColumns}
                         key={this.state.numColumns}
@@ -96,6 +96,10 @@ class Gallery extends Component {
         this.setState({
             photos: photosList
         })
+    }
+
+    displaySingleCallback = (i) => {
+        this.props.navigation.navigate("bigPhoto", { photo: this.state.photos[i] })
     }
 }
 

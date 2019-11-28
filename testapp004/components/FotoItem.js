@@ -15,7 +15,7 @@ class FotoItem extends Component {
                 flex: 1,
                 height: Dimensions.get("window").width / 4,
                 padding: 2
-            }} onPress={this.longPress}>
+            }} onPress={this.shortPress} onLongPress={this.longPress}>
                 <Image source={{ uri: this.props.photo.uri }} style={{
                     flex: 1
                 }} />
@@ -34,8 +34,12 @@ class FotoItem extends Component {
         );
     }
 
-    longPress = () => {
+    shortPress = () => {
         this.props.selectCallback(this.props.index);
+    }
+
+    longPress = () => {
+        this.props.displaySingleCallback(this.props.index);
     }
 }
 
