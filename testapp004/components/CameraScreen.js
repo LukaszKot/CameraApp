@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, BackHandler, ToastAndroid } from 'react-native';
+import { View, Text, StyleSheet, BackHandler, ToastAndroid, Animated, Dimensions, ScrollView } from 'react-native';
 import * as Permissions from "expo-permissions";
 import { Camera } from 'expo-camera';
 import CircleButton from './CircleButton';
 import * as MediaLibrary from "expo-media-library";
+import RadioGroup from './RadioGroup';
 
 class CameraScreen extends Component {
     static navigationOptions = {
@@ -14,8 +15,28 @@ class CameraScreen extends Component {
         this.state = {
             hasCameraPermission: null,
             type: Camera.Constants.Type.back,
-            takenPhotos: []
+            takenPhotos: [],
+            wb: 0,
+            pos: new Animated.Value(Dimensions.get("window").height),
         };
+        this.isHidden = true
+    }
+
+    toggle() {
+
+        if (this.isHidden) toPos = 0; else toPos = Dimensions.get("window").height
+
+        Animated.spring(
+            this.state.pos,
+            {
+                toValue: toPos,
+                velocity: 1,
+                tension: 0,
+                friction: 10,
+            }
+        ).start();
+
+        this.isHidden = !this.isHidden;
     }
 
     handleBackPress = () => {
@@ -43,12 +64,15 @@ class CameraScreen extends Component {
         } else {
             return (
                 <View style={{ flex: 1 }}>
-                    <Camera
-                        ref={ref => {
-                            this.camera = ref;
-                        }}
-                        style={{ flex: 1 }}
-                        type={this.state.type}>
+                    <Camera ref={ref => { this.camera = ref; }} style={{ flex: 1 }} type={this.state.type} whiteBalance={this.state.wb}>
+                        <Animated.View
+                            style={[styles.animatedView, { transform: [{ translateY: this.state.pos }] }]} >
+                            <ScrollView>
+                                <Text style={{ fontSize: 20, fontWeight: "bold", marginTop: 20, marginHorizontal: 10, color: "white" }}>SETTINGS</Text>
+                                <RadioGroup data={Object.keys(Camera.Constants.WhiteBalance)} color="#F44336" direction="column"
+                                    groupName="WHITE BALANCE" selectedIndex={0} change={(i) => this.setState({ wb: Object.keys(Camera.Constants.WhiteBalance)[i] })} />
+                            </ScrollView>
+                        </Animated.View>
                         <View style={{
                             flex: 1, flexDirection: "row", justifyContent: "center", height: 200, width: "100%",
                             position: "absolute", bottom: 0, alignItems: "center"
@@ -90,9 +114,21 @@ class CameraScreen extends Component {
     }
 
     goToSettings = () => {
-
+        this.toggle()
     }
 }
+
+var styles = StyleSheet.create({
+
+    animatedView: {
+        position: "absolute",
+        bottom: 0,
+        left: 0,
+        backgroundColor: "rgba(0,0,0,0.5)",
+        width: Dimensions.get("window").width * 2 / 3,
+        height: Dimensions.get("window").height
+    }
+});
 
 
 export default CameraScreen;
