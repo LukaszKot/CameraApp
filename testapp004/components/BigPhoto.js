@@ -20,6 +20,7 @@ class BigPhoto extends Component {
     }
 
     render() {
+        console.log(this.props.navigation.state.params.photo)
         return (
             <View style={{ flex: 1 }}>
                 <View style={{ flex: 3 }}>
@@ -29,6 +30,13 @@ class BigPhoto extends Component {
                         style={{ width: "100%", height: "100%" }}
                         source={{ uri: this.props.navigation.state.params.photo.uri }}
                     />
+                    <Text style={{
+                        position: "absolute",
+                        bottom: 0,
+                        right: 0,
+                        fontSize: 30,
+                        color: "white"
+                    }}>{this.props.navigation.state.params.photo.width}x{this.props.navigation.state.params.photo.height}</Text>
                 </View>
                 <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
                     <Button onPress={this.delete} title={"USUŃ"} />
